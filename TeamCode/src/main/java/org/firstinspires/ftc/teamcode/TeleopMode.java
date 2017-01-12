@@ -35,15 +35,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 /**
@@ -73,7 +66,7 @@ public class TeleopMode extends OpMode {
      private int targetHeading = 0;
     private boolean flippersLocked = true;
 
-    HocoHardware robot = new HocoHardware();
+    RobotHardware robot = new RobotHardware();
 
 
 

@@ -1,12 +1,22 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+/**
+ * Created by knxtd on 1/12/2017.
+ */
+
+public class Hardware6173 {
+
+
+/**
+ * Created by knxtd on 1/12/2017.
+ */
+
+
 
 /**
  * This is NOT an opmode.
@@ -26,20 +36,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *   As the arm servo approaches 0, the arm position moves up (away from the floor).
  *   As the claw servo approaches 0, the claw opens up (drops the game element).
  */
-public class  HocoHardware
-{
+
     /* Public OpMode members. */
-    public DcMotor  leftMotor   = null;
+    public DcMotor leftMotor   = null;
     public DcMotor  rightMotor  = null;
-    public ColorSensor groundSensor;
-    public ColorSensor pokerColor;
-    public ModernRoboticsI2cGyro gyro;
-    public DcMotor rack = null;
-
-    public Servo foot;
-    public Servo leftie;
-    public Servo rightie;
-
+    public DcMotor beacon = null;
+    public Servo kicker = null;
+    public Servo leftflipper = null;
+    public Servo rightflipper = null;
 
 
     /* Local OpMode members. */
@@ -47,33 +51,31 @@ public class  HocoHardware
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HocoHardware() {
+    public Hardware6173() {
     }
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // save reference to HW Map
         hwMap = ahwMap;
-       // groundSensor = hwMap.colorSensor.get("ground color sensor");
+        // groundSensor = hwMap.colorSensor.get("ground color sensor");
         //pokerColor = hwMap.colorSensor.get("poker color sensor");
         //gyro = (ModernRoboticsI2cGyro)hwMap.gyroSensor.get("gyro");
         // Define and Initialize Motors
         leftMotor   = hwMap.dcMotor.get("left motor");
         rightMotor  = hwMap.dcMotor.get("right motor");
-        rack = hwMap.dcMotor.get("rack");
-        rack.setDirection(DcMotor.Direction.REVERSE);
+        beacon = hwMap.dcMotor.get("beacon");
 
-        foot = hwMap.servo.get("foot");
-        leftie = hwMap.servo.get("leftie");
-        rightie = hwMap.servo.get("rightie");
+
+        kicker = hwMap.servo.get("kicker");
+
+        leftflipper = hwMap.servo.get("leftflipper");
+        rightflipper = hwMap.servo.get("rightflipper");
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
-
-        gyro = (ModernRoboticsI2cGyro)hwMap.gyroSensor.get("gyro");
-        groundSensor = (ModernRoboticsI2cColorSensor)hwMap.get("groundcolor");
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -107,3 +109,5 @@ public class  HocoHardware
         period.reset();
     }
 }
+
+

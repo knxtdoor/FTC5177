@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.AnalogSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -12,67 +10,69 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * This is NOT an opmode.
- * <p>
+ *
  * This class can be used to define all the specific hardware for a single robot.
  * In this case that robot is a K9 robot.
- * <p>
+ *
  * This hardware class assumes the following device names have been configured on the robot:
  * Note:  All names are lower case and some have single spaces between words.
- * <p>
+ *
  * Motor channel:  Left  drive motor:        "left motor"
  * Motor channel:  Right drive motor:        "right motor"
  * Servo channel:  Servo to raise/lower arm: "arm"
  * Servo channel:  Servo to open/close claw: "claw"
- * <p>
+ *
  * Note: the configuration of the servos is such that:
- * As the arm servo approaches 0, the arm position moves up (away from the floor).
- * As the claw servo approaches 0, the claw opens up (drops the game element).
+ *   As the arm servo approaches 0, the arm position moves up (away from the floor).
+ *   As the claw servo approaches 0, the claw opens up (drops the game element).
  */
-public class ProgbotHardware {
+public class RobotHardware
+{
     /* Public OpMode members. */
-    public DcMotor leftMotor = null;
-    public DcMotor rightMotor = null;
+    public DcMotor  leftMotor   = null;
+    public DcMotor  rightMotor  = null;
     public ColorSensor groundSensor;
     public ColorSensor pokerColor;
     public ModernRoboticsI2cGyro gyro;
-    public AnalogInput ultrasonic;
+    public DcMotor rack = null;
+    public Servo Catapult = null;
+
 
     /* Local OpMode members. */
-    HardwareMap hwMap = null;
-    private ElapsedTime period = new ElapsedTime();
+    HardwareMap hwMap  = null;
+    private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public ProgbotHardware() {
+    public RobotHardware() {
     }
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // save reference to HW Map
         hwMap = ahwMap;
-        // groundSensor = hwMap.colorSensor.get("ground color sensor");
+       // groundSensor = hwMap.colorSensor.get("ground color sensor");
         //pokerColor = hwMap.colorSensor.get("poker color sensor");
         //gyro = (ModernRoboticsI2cGyro)hwMap.gyroSensor.get("gyro");
         // Define and Initialize Motors
-        leftMotor = hwMap.dcMotor.get("left motor");
-        rightMotor = hwMap.dcMotor.get("right motor");
-
-        gyro = (ModernRoboticsI2cGyro) hwMap.gyroSensor.get("gyro");
+        leftMotor   = hwMap.dcMotor.get("left motor");
+        rightMotor  = hwMap.dcMotor.get("right motor");
+        rack = hwMap.dcMotor.get("rack");
+        rack.setDirection(DcMotor.Direction.REVERSE);
+        Catapult = hwMap.servo.get("Catapult");
 
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
-        ultrasonic = hwMap.analogInput.get("ultrasonic");
+
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
-        //gang
 
-
-        groundSensor = (ModernRoboticsI2cColorSensor) hwMap.get("color");
+        gyro = (ModernRoboticsI2cGyro)hwMap.gyroSensor.get("gyro");
+        groundSensor = (ModernRoboticsI2cColorSensor)hwMap.get("groundcolor");
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
-        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
 
@@ -80,22 +80,18 @@ public class ProgbotHardware {
 
     }
 
-    public double getUltrasonicDistance() {
-        double VFiveMM = 0.009671875;
-        return ultrasonic.getVoltage() * VFiveMM;
-    }
-
     /***
+     *
      * waitForTick implements a periodic delay. However, this acts like a metronome with a regular
      * periodic tick.  This is used to compensate for varying processing times for each cycle.
      * The function looks at the elapsed cycle time, and sleeps for the remaining time interval.
      *
-     * @param periodMs Length of wait cycle in mSec.
+     * @param periodMs  Length of wait cycle in mSec.
      * @throws InterruptedException
      */
-    public void waitForTick(long periodMs) throws InterruptedException {
+    public void waitForTick(long periodMs)  throws InterruptedException {
 
-        long remaining = periodMs - (long) period.milliseconds();
+        long  remaining = periodMs - (long)period.milliseconds();
 
         // sleep for the remaining portion of the regular cycle period.
         if (remaining > 0)

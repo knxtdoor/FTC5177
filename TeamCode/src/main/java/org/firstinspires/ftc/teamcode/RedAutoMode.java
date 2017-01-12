@@ -24,7 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
+//ifsvYmcf
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -56,7 +56,7 @@ public class RedAutoMode extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
     private int autoState = 1;
     private double leftThrottle, rightThrottle;
-    ProgbotHardware robot = new ProgbotHardware();
+    RobotHardware robot = new RobotHardware();
     private final double LIGHT_THRESHOLD = 4;
     //private boolean isFirstTime = true;
     //private int targetHeading = 0;

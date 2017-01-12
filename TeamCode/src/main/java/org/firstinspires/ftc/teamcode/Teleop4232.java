@@ -32,11 +32,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -44,39 +45,45 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * The names of OpModes appear on the menu of the FTC Driver Station.
  * When an selection is made from the menu, the corresponding OpMode
  * class is instantiated on the Robot Controller and executed.
- *
+ * <p>
  * This particular OpMode just executes a basic Tank Drive Teleop for a PushBot
  * It includes all the skeletal structure that all iterative OpModes contain.
- *
+ * <p>
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "Template: Iterative OpMode", group = "Iterative Opmode ")
+@TeleOp(name = "4232 Teleop", group = "Iterative Opmode")
 // @Autonomous(...) is the other common choice
-@Disabled
-public class BallKnocker2 extends OpMode
-{
+//@Disabled
+public class Teleop4232 extends OpMode {
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
-    RobotHardware robot = new RobotHardware();
-    private boolean stopMotors = false;
-    private int autostate = 0;
+    private double leftThrottle = 0;
+    private double rightThrottle = 0;
+
+    Hardware4232 robot = new Hardware4232();
 
 
-    // private DcMotor leftMotor = null;
-    // private DcMotor rightMotor = null;
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+
+
+
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
 
+
         robot.init(hardwareMap);
-        robot.leftie.setPosition(1);
-        robot.rightie.setPosition(0);
+
+
+        if (getBatteryVoltage() < 12) telemetry.addData("BATTERY VOLTAGE LOW", getBatteryVoltage());
+
+
+
+
+
+
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
@@ -91,21 +98,18 @@ public class BallKnocker2 extends OpMode
         // telemetry.addData("Status", "Initialized");
     }
 
+
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
     @Override
     public void init_loop() {
-        robot.leftie.setPosition(.99);
-        robot.rightie.setPosition(0);
-
     }
 
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
+
     @Override
     public void start() {
+        //telemetry.addData("Blast Off", " All Systems are GO!");
         runtime.reset();
     }
 
@@ -115,47 +119,24 @@ public class BallKnocker2 extends OpMode
     @Override
     public void loop() {
         telemetry.addData("Status", "Running: " + runtime.toString());
-
-        robot.leftie.setPosition(1);
-        robot.rightie.setPosition(0);
-        robot.leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        stopMotors = averageEncoders() > 6000;
+        leftThrottle = -gamepad1.left_stick_y;
+        rightThrottle = -gamepad1.right_stick_y;
 
 
-        telemetry.addData("", averageEncoders());
-        telemetry.update();
-        switch (autostate) {
-            case 0:
-                if (runtime.seconds() < 10) {
-                    robot.leftMotor.setPower(0);
-                    robot.rightMotor.setPower(0);
-                } else {
-                    autostate++;
-                }
-                break;
-            case 1:
-                robot.rightMotor.setPower(.75);
-                robot.leftMotor.setPower(.75);
-                if (averageEncoders() > 8000) {
-                    autostate++;
-                }
-                break;
-            case 2:
-                robot.leftMotor.setPower(0);
-                robot.rightMotor.setPower(0);
-                break;
-        }
-        telemetry.addData("StopMotors", stopMotors);
-        if (autostate == 2) {
-            requestOpModeStop();
-        }
+        if(gamepad1.left_bumper) robot.leftflipper.setPosition(.8);
+        if(gamepad1.right_bumper) robot.rightball.setPosition(.8);
 
-        // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
-        // leftMotor.setPower(-gamepad1.left_stick_y);
 
-        // rightMotor.setPower(-gamepad1.right_stick_y);
+        if(gamepad2.left_bumper) robot.leftball.setPosition(.8);
+        if(gamepad2.right_bumper) robot.rightball.setPosition(.8);
+
+        if(gamepad2.b) robot.beacon.setPosition(.8);
+
+
+        robot.leftMotor.setPower(leftThrottle);
+        robot.rightMotor.setPower(rightThrottle);
+
+
     }
 
     /*
@@ -163,11 +144,31 @@ public class BallKnocker2 extends OpMode
      */
     @Override
     public void stop() {
+        telemetry.addData("Nice Job Driver!", "");
+        telemetry.update();
     }
 
-    int averageEncoders() {
-        return (Math.abs(robot.leftMotor.getCurrentPosition()) + Math.abs(robot.rightMotor.getCurrentPosition())) / 2;
+    double getBatteryVoltage() {
+        double result = Double.POSITIVE_INFINITY;
+        for (VoltageSensor sensor : hardwareMap.voltageSensor) {
+            double voltage = sensor.getVoltage();
+            if (voltage > 0) {
+                result = Math.min(result, voltage);
+            }
+        }
+        return result;
     }
 
 
+
+    double clipRanges(double whatIAmClipping){
+
+        whatIAmClipping = Math.min(whatIAmClipping, 1);
+        whatIAmClipping = Math.max (whatIAmClipping , -1);
+
+        return whatIAmClipping;
+
+    }
 }
+
+
