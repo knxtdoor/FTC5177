@@ -28,7 +28,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -54,7 +53,7 @@ public class AutoMode extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
     private int autoState = 0;
     private double leftThrottle, rightThrottle;
-    HocoHardware robot = new HocoHardware();
+    RobotHardware robot = new RobotHardware();
     private boolean isFirstTime = true;
     private int targetHeading = 0;
     // private DcMotor leftMotor = null;
